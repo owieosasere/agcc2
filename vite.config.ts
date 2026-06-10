@@ -15,11 +15,9 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    outDir: 'dist/spa', // Matches your netlify.toml publish folder
+    outDir: 'dist/spa',
     rollupOptions: {
-      // Tells Vite to ignore the server module during frontend bundling
-      external: ['./server', 'express'], 
+      external: ['./server', 'express'],
     },
   },
 }));
-}
