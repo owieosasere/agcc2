@@ -1,7 +1,17 @@
-import { defineConfig, Plugin } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "node:path";
-import { createServer } from "./server";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+// Keep your existing imports as they are, but configure the build below
+
+export default defineConfig({
+  // ... Keep any existing config options you have here (like plugins or resolve) ...
+  
+  build: {
+    outDir: 'dist/spa', // Your netlify.toml targets this publish folder
+    rollupOptions: {
+      external: ['./server', 'express'], // ✅ Tells Vite to ignore the server import during frontend bundling
+    },
+  },
+});
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
