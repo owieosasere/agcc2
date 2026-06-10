@@ -1,49 +1,25 @@
+import path from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-// Keep your existing imports as they are, but configure the build below
 
-export default defineConfig({
-  // ... Keep any existing config options you have here (like plugins or resolve) ...
-  
-  build: {
-    outDir: 'dist/spa', // Your netlify.toml targets this publish folder
-    rollupOptions: {
-      external: ['./server', 'express'], // ✅ Tells Vite to ignore the server import during frontend bundling
-    },
-  },
-});
-
-// https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  plugins: [react()],
   server: {
     host: "::",
     port: 8080,
-    fs: {
-      allow: ["./client", "./shared", "index.html"],
-      deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './client'),
+      '@shared': path.resolve(__dirname, './shared'),
     },
   },
   build: {
-    outDir: "dist/spa",
-  },
-  plugins: [react(), expressPlugin()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./client"),
-      "@shared": path.resolve(__dirname, "./shared"),
+    outDir: 'dist/spa', // Matches your netlify.toml publish folder
+    rollupOptions: {
+      // Tells Vite to ignore the server module during frontend bundling
+      external: ['./server', 'express'], 
     },
   },
 }));
-
-function expressPlugin(): Plugin {
-  return {
-    name: "express-plugin",
-    apply: "serve", // Only apply during development (serve mode)
-    configureServer(server) {
-      const app = createServer();
-
-      // Add Express app as middleware to Vite dev server
-      server.middlewares.use(app);
-    },
-  };
 }
